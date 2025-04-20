@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>足球问答挑战</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css" />
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input[type=text] { width: 300px; padding: 5px; }
+    button { padding: 5px 10px; margin-left: 5px; }
+    table { margin-top: 20px; border-collapse: collapse; width: 100%; }
+    td, th { padding: 6px 8px; border: 1px solid #ccc; text-align: center; }
+    .green { background-color: #c8f7c5; color: green; }
+    .orange { background-color: #fff2cc; color: orange; }
+    .black { background-color: #e0e0e0; color: black; }
+  </style>
+</head>
+<body>
+  <h2>足球问答挑战：你能猜出是谁吗？</h2>
+  <p>请输入你猜测的球员姓名（支持模糊补全）：</p>
+  <input type="text" id="guessInput" list="playerList">
+  <datalist id="playerList"></datalist>
+  <button onclick="handleGuess()">提交</button>
+
+  <table id="guessTable">
+    <thead>
+      <tr>
+        <th>#</th><th>球员ID</th><th>国籍</th><th>俱乐部</th><th>世界杯次数</th><th>年龄</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let data = [...]; // 这里请替换为你自己的 JSON 数据内容
+    let correct = data[Math.floor(Math.random() * data.length)];
+
+    const continents = {
+      "Argentina": "South America", "Brazil": "South America", "Uruguay": "South America",
+      "France": "Europe", "Germany": "Europe", "Spain": "Europe", "Portugal": "Europe", "England": "Europe", "Croatia": "Europe", "Italy": "Europe", "Netherlands": "Europe", "Belgium": "Europe", "Switzerland": "Europe", "Serbia": "Europe", "Denmark": "Europe", "Poland": "Europe",
+      "USA": "North America", "Mexico": "North America", "Canada": "North America",
+      "Japan": "Asia", "South Korea": "Asia", "China": "Asia", "Iran": "Asia", "Saudi Arabia": "Asia", "Qatar": "Asia", "Australia": "Asia",
+      "Morocco": "Africa", "Senegal": "Africa", "Cameroon": "Africa", "Egypt": "Africa", "Ghana": "Africa", "Nigeria": "Africa"
+    };
+
+    const clubCountries = {
+      "Paris Saint-Germain": "France", "Inter Miami": "USA", "Al Hilal": "Saudi Arabia",
+      "Al Nassr": "Saudi Arabia", "Shanghai Port": "China", "Wuhan Three Towns": "China",
+      "Barcelona": "Spain", "Real Madrid": "Spain", "Atletico Madrid": "Spain", "Sevilla": "Spain",
+      "Manchester United": "England", "Manchester City": "England", "Liverpool": "England", "Arsenal": "England", "Chelsea": "England",
+      "Bayern Munich": "Germany", "Borussia Dortmund": "Germany", "RB Leipzig": "Germany",
+      "Juventus": "Italy", "AC Milan": "Italy", "Inter Milan": "Italy", "Napoli": "Italy",
+      "Ajax": "Netherlands", "PSV": "Netherlands",
+      "Al Ittihad": "Saudi Arabia", "Beijing Guoan": "China"
+    };
+
+    let attempts = 0;
+
+    function initGame() {
+      const datalist = document.getElementById("playerList");
+      data.forEach(p => {
+        const option = document.createElement("option");
+        option.value = p.name;
+        datalist.appendChild(option);
+      });
+    }
+
+    initGame();
+
+    function evaluate(user, correct) {
+      const result = {};
+      const uc = continents[user.nationality] || "";
+      const cc = continents[correct.nationality] || "";
+      result.nationality = user.nationality === correct.nationality ? "green" : (uc === cc ? "orange" : "black");
+
+      if (user.team === correct.team) {
+        result.team = "green";
+      } else if (user.team === "Retired" || correct.team === "Retired") {
+        result.team = "black";
+      } else if ((clubCountries[user.team] || "") === (clubCountries[correct.team] || "")) {
+        result.team = "orange";
+      } else {
+        result.team = "black";
+      }
+
+      const wcDiff = user.world_cups - correct.world_cups;
+      result.world_cups = wcDiff === 0 ? "green" : (Math.abs(wcDiff) <= 2 ? "orange" : "black");
+      result.world_cups_val = wcDiff === 0 ? `${user.world_cups}` : `${user.world_cups}${wcDiff > 0 ? "↑" : "↓"}`;
+
+      const ageDiff = user.age - correct.age;
+      result.age = ageDiff === 0 ? "green" : (Math.abs(ageDiff) <= 3 ? "orange" : "black");
+      result.age_val = ageDiff === 0 ? `${user.age}` : `${user.age}${ageDiff > 0 ? "↑" : "↓"}`;
+
+      return result;
+    }
+
+    function handleGuess() {
+      if (attempts >= 10) return;
+      const inputBox = document.getElementById("guessInput");
+      const input = inputBox.value.trim().toLowerCase();
+      const matches = data.filter(p => p.name.toLowerCase().includes(input));
+      if (matches.length === 0) {
+        alert("没有匹配的球员");
+        return;
+      }
+      const player = matches[0];
+
+      const result = evaluate(player, correct);
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${attempts + 1}</td>
+        <td class="${player.id === correct.id ? 'green' : 'black'}">${player.id}</td>
+        <td class="${result.nationality}">${player.nationality}</td>
+        <td class="${result.team}">${player.team}</td>
+        <td class="${result.world_cups}">${result.world_cups_val}</td>
+        <td class="${result.age}">${result.age_val}</td>
+      `;
+      document.querySelector("#guessTable tbody").appendChild(row);
+
+      attempts++;
+      inputBox.value = "";
+      inputBox.focus();
+
+      if (player.id === correct.id) {
+        alert("恭喜你猜对了！");
+      } else if (attempts === 10) {
+        alert("挑战失败");
+      }
+    }
+  </script>
+</body>
+</html>
