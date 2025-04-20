@@ -103,11 +103,11 @@
 
       const wcDiff = user.world_cups - correct.world_cups;
       result.world_cups = wcDiff === 0 ? "green" : (Math.abs(wcDiff) <= 2 ? "orange" : "black");
-      result.world_cups_val = wcDiff === 0 ? `${user.world_cups}` : `${user.world_cups}${wcDiff > 0 ? "↓" : "↑"`};
+      result.world_cups_val = wcDiff === 0 ? `${user.world_cups}` : `${user.world_cups}${wcDiff > 0 ? "↓" : "↑"};
 
       const ageDiff = user.age - correct.age;
       result.age = ageDiff === 0 ? "green" : (Math.abs(ageDiff) <= 3 ? "orange" : "black");
-      result.age_val = ageDiff === 0 ? `${user.age}` : `${user.age}${ageDiff > 0 ? "↓" : "↑"`};
+      result.age_val = ageDiff === 0 ? `${user.age}` : `${user.age}${ageDiff > 0 ? "↓" : "↑"};
 
       return result;
     }
