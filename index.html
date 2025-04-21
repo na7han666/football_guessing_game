@@ -900,9 +900,12 @@ function showMessage(msg) {
   const box = document.getElementById("messageBox");
   box.textContent = msg;
   box.style.display = "block";
-  document.body.addEventListener("click", () => {
-    box.style.display = "none";
-  }, { once: true });
+  setTimeout(() => {
+    document.body.addEventListener("click", () => {
+      box.style.display = "none";
+      startNewGame();
+    }, { once: true });
+  }, 3000);
 }
 
 function updateStats() {
@@ -991,6 +994,12 @@ updateStats();
 showMessage("Challenge failed. The correct answer is: " + correct.name + " (" + correct.id + ")");
       }
     }
-  </script>
+  
+function startNewGame() {
+  correct = data[Math.floor(Math.random() * data.length)];
+  attempts = 0;
+  document.querySelector("#guessTable tbody").innerHTML = "";
+}
+</script>
 </body>
 </html>
