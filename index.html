@@ -22,8 +22,7 @@
   <datalist id="playerList"></datalist>
   
   <button onclick="handleGuess()">提交</button>
-  <button onclick="location.reload()">重新开始</button>
-  <p>胜利次数: <span id="winCount">0</span>｜连胜记录: <span id="streakCount">0</span></p>
+    <p>胜利次数: <span id="winCount">0</span>｜连胜记录: <span id="streakCount">0</span></p>
   <div id="messageBox" style="display:none; background:#eee; border:1px solid #ccc; padding:10px; margin-top:10px;"></div>
 
 
@@ -901,9 +900,9 @@ function showMessage(msg) {
   const box = document.getElementById("messageBox");
   box.textContent = msg;
   box.style.display = "block";
-  setTimeout(() => {
+  document.body.addEventListener("click", () => {
     box.style.display = "none";
-  }, 3000);
+  }, { once: true });
 }
 
 function updateStats() {
