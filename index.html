@@ -20,7 +20,12 @@
   <p>请输入你猜测的球员姓名(支持模糊补全)：</p>
   <input type="text" id="guessInput" list="playerList">
   <datalist id="playerList"></datalist>
+  
   <button onclick="handleGuess()">提交</button>
+  <button onclick="location.reload()">重新开始</button>
+  <p>胜利次数: <span id="winCount">0</span>｜连胜记录: <span id="streakCount">0</span></p>
+  <div id="messageBox" style="display:none; background:#eee; border:1px solid #ccc; padding:10px; margin-top:10px;"></div>
+
 
   <table id="guessTable">
     <thead>
@@ -889,6 +894,24 @@
 
     let attempts = 0;
 
+let wins = 0;
+let streak = 0;
+
+function showMessage(msg) {
+  const box = document.getElementById("messageBox");
+  box.textContent = msg;
+  box.style.display = "block";
+  setTimeout(() => {
+    box.style.display = "none";
+  }, 3000);
+}
+
+function updateStats() {
+  document.getElementById("winCount").textContent = wins;
+  document.getElementById("streakCount").textContent = streak;
+}
+
+
     function initGame() {
       const datalist = document.getElementById("playerList");
       data.forEach(p => {
@@ -955,9 +978,18 @@
       inputBox.focus();
 
       if (player.id === correct.id) {
-        alert("恭喜你猜对了！");
+        wins++;
+streak++;
+updateStats();
+showMessage("恭喜你猜对了！");
       } else if (attempts === 10) {
-        alert("Challenge failed. The correct answer is: " + correct.name + " (" + correct.id + ")");
+        if (streak > 0) {
+  streak = 0;
+} else {
+  streak--;
+}
+updateStats();
+showMessage("Challenge failed. The correct answer is: " + correct.name + " (" + correct.id + ")");
       }
     }
   </script>
