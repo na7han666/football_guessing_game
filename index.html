@@ -17,7 +17,7 @@
 </head>
 <body>
   <h2>足球问答挑战：你能猜出是谁吗？</h2>
-  <p>请输入你猜测的球员姓名（支持模糊补全）：</p>
+  <p>请输入你猜测的球员姓名(支持模糊补全)：</p>
   <input type="text" id="guessInput" list="playerList">
   <datalist id="playerList"></datalist>
   <button onclick="handleGuess()">提交</button>
@@ -957,7 +957,7 @@
       if (player.id === correct.id) {
         alert("恭喜你猜对了！");
       } else if (attempts === 10) {
-        alert("挑战失败，正确答案是：" + correct.name + " (" + correct.id + ")");
+        alert("Challenge failed. The correct answer is: " + correct.name + " (" + correct.id + ")");
       }
     }
   </script>
