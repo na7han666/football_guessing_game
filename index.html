@@ -981,7 +981,11 @@ function updateStats() {
 
       if (player.id === correct.id) {
         wins++;
-streak++;
+if (streak >= 0) {
+  streak++;
+} else {
+  streak = 1;
+}
 updateStats();
 showMessage("恭喜你猜对了!");
       } else if (attempts === 10) {
